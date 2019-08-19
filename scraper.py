@@ -1,4 +1,4 @@
-import threading, time, requests
+import threading, time, requests, datetime
 from bs4 import BeautifulSoup
 
 class Scraper(threading.Thread):
@@ -15,5 +15,5 @@ class Scraper(threading.Thread):
         while not self.exitFlag.isSet():
             print("GET " + self.symbol)
             soup = BeautifulSoup(requests.get(self.source).content, 'html.parser')
-            self.pipeline.put([1, self.symbol, soup.find('div', {'id': 'nseTradeprice'}).get_text(), time.time()])
+            self.pipeline.put([1, self.symbol, soup.find('div', {'id': 'nseTradeprice'}).get_text(), datetime.datetime.now()])
         print("> stopping "+self.symbol+" thread")
