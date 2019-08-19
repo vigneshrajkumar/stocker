@@ -1,4 +1,4 @@
-import csv, time
+import csv, time, yaml
 import threading, queue
 import signal
 from scraper import Scraper
@@ -6,6 +6,13 @@ from datastoreOrchestrator import DatastoreOrchestror
 
 def stopExtraction(sig, frame):
     print("> Stopping Extraction")
+
+def getDatabaseParams():
+    with open("database.yaml", 'r') as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
 
 def app():
     
@@ -18,7 +25,7 @@ def app():
     pipeline = queue.Queue()
     exitFlag = threading.Event()
 
-    datastore = DatastoreOrchestror(pipeline, exitFlag)
+    datastore = DatastoreOrchestror(pipeline, exitFlag, getDatabaseParams())
     datastore.start()
     
     workerThreads = []
